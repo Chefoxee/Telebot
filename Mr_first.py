@@ -1,14 +1,27 @@
 import requests
 
-bot_adress_get_updates = "https://api.telegram.org/bot6623214117:AAEDFClvKNGQgZsKK78GPFLylniUyR8pdcY/getUpdates"
-bot_adress_send_message = "https://api.telegram.org/bot6623214117:AAEDFClvKNGQgZsKK78GPFLylniUyR8pdcY/sendMessage"
+import yaml
+
+with open('config.yaml') as file:
+    config = yaml.load(file, Loader=yaml.FullLoader)
+
+
+tg_endpoint = config['telegram']['endpoint']
+tg_token = config['telegram']['token']
+weather_endpoint = config['weather_api']['endpoint']
+weather_key = config['weather_api']['key']
+
+
+
+bot_adress_get_updates = f"https://{tg_endpoint}/bot{tg_token}/getUpdates"
+bot_adress_send_message = f"https://{tg_endpoint}/bot{tg_token}/sendMessage"
 last_update_id = 0
 
 
-def send_weather(city):
+def get_weather(city):
 
-    weather_url = "http://api.weatherapi.com/v1"
-    get_weather_info = requests.get(f"{weather_url}/current.json?key=35e5486e758e470ea36160515233010&q={city}&aqi=no")
+    weather_url = f"http://{weather_endpoint}/v1"
+    get_weather_info = requests.get(f"{weather_url}/current.json?key={weather_key}&q={city}&aqi=no")
     weather_info_to_json = get_weather_info.json()
     temp_celsius = weather_info_to_json['current']['temp_c']
     weather = weather_info_to_json['current']['condition']['text']
