@@ -1,8 +1,16 @@
 import requests
 import yaml
+import logging
 
 with open('config.yaml') as file:
     config = yaml.load(file, Loader=yaml.FullLoader)
+
+logging.basicConfig(
+    level=config['logging']['level'],
+    filename=config['logging']['file'],
+    filemode="w",
+    format="%(asctime)s %(levelname)s %(message)s",
+)
 
 
 tg_endpoint = config['telegram']['endpoint']
@@ -50,6 +58,7 @@ while True:
         message_text = update['message']['text']
         chat_id = update['message']['chat']['id']
         print(f"Пользователь {user_name}(@{user_username}) написал боту - \" {message_text} \" ")
+        logging.info(f"Пользователь {user_name}(@{user_username}) написал боту - \" {message_text} \" ")
 
         if message_text == "/Погода":
 
